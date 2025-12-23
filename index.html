@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Personal Finance Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Welcome, {{ session.username }}</h2>
+<div class="container">
+
+    {% if warning %}
+    <div style="background:#ffe6e6;color:#b30000;padding:10px;margin:15px 0;">
+        ⚠ <strong>Budget Exceeded!</strong><br>
+        Category: {{ warning.category }} <br>
+        Budget: {{ warning.budget }} <br>
+        Spent: {{ warning.spent }}
+    </div>
+    {% endif %}
+    <h3>Add Transaction</h3>
+    <form method="POST" action="/add_transaction">
+        <select name="type">
+            <option value="Income">Income</option>
+            <option value="Expense">Expense</option>
+        </select>
+        <input type="text" name="category" placeholder="Category" required>
+        <input type="number" name="amount" step="0.01" placeholder="Amount" required>
+        <input type="text" name="description" placeholder="Description" required>
+        <button type="submit">Add</button>
+    </form>
+    <h3>Set Budget</h3>
+    <form method="POST" action="/set_budget">
+        <input type="text" name="category" placeholder="Category" required>
+        <input type="number" name="budget" step="0.01" placeholder="Budget" required>
+        <button type="submit">Set</button>
+    </form>
+    <h3>Generate Report</h3>
+    <form method="GET" action="/report">
+        <select name="period">
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+        </select>
+        <button type="submit">Generate Report</button>
+    </form>
+    <h3>Budgets</h3>
+    {% if budgets %}
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Category</th>
+            <th>Budget ($)</th>
+        </tr>
+        {% for category, budget in budgets %}
+        <tr>
+            <td>{{ category }}</td>
+            <td>{{ '%.2f'|format(budget) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No budgets set yet.</p>
+    {% endif %}
+    <h3>Transactions</h3>
+    {% if transactions %}
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+        {% for t in transactions %}
+        <tr>
+            <td>{{ t[0] }}</td>
+            <td>{{ t[6] }}</td>
+            <td>{{ t[2] }}</td>
+            <td>{{ t[3] }}</td>
+            <td>{{ t[4] }}</td>
+            <td>{{ t[5] }}</td>
+            <td>
+                <form method="POST" action="/update_transaction">
+                    <input type="hidden" name="id" value="{{ t[0] }}">
+                    <input type="number" name="amount" step="0.01" value="{{ t[4] }}" required>
+                    <input type="text" name="description" value="{{ t[5] }}" required>
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+            <td>
+                <form method="POST" action="/delete_transaction" onsubmit="return confirm('Are you sure?');">
+                    <input type="hidden" name="id" value="{{ t[0] }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No transactions yet.</p>
+    {% endif %}
+</div>
+<div class="btn">
+<a href="/logout"><button>Logout</button></a>
+</div>
+</body>
+</html>

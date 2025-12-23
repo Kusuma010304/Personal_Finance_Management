@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Budgets</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f7f7f7; }
+        h1 { color: #333; }
+        table { width: 50%; border-collapse: collapse; margin-top: 20px; background-color: #fff; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #28a745; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .back-link { margin-top: 20px; display: inline-block; text-decoration: none; color: #007BFF; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Your Budgets</h1>
+
+    {% if budgets %}
+    <table>
+        <tr>
+            <th>Category</th>
+            <th>Budget ($)</th>
+        </tr>
+        {% for category, budget in budgets %}
+        <tr>
+            <td>{{ category }}</td>
+            <td>{{ '%.2f'|format(budget) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No budgets set yet.</p>
+    {% endif %}
+
+    <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+</body>
+</html>

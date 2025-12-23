@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ period.capitalize() }} Report - Personal Finance Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>Finance Report</h1>
+    <h2>Period: {{ period|capitalize }}</h2>
+
+    {% if report %}
+    <table>
+        <tr>
+            <th>Category</th>
+            <th>Total Spent</th>
+        </tr>
+        {% for category, total in report %}
+        <tr>
+            <td>{{ category }}</td>
+            <td>${{ '%.2f'|format(total) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No transactions found for this period.</p>
+    {% endif %}
+
+    <a href="/login" class="back-link">← Back to Dashboard</a>
+</div>
+</body>
+</html>
